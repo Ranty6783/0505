@@ -1,6 +1,7 @@
 let capture;
 let facemesh;
 let predictions = [];
+let videoReady = false;
 
 const connectIndex = [
   409, 270, 269, 267, 0, 37, 39, 40, 185,
@@ -10,7 +11,13 @@ const connectIndex = [
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  capture = createCapture(VIDEO);
+  capture = createCapture({
+    video: true,
+    audio: false
+  }, () => {
+    videoReady = true;
+  });
+
   capture.size(640, 480);
   capture.hide();
 
@@ -32,7 +39,11 @@ function draw() {
   fill(0);
   textSize(32);
   textAlign(CENTER, CENTER);
-  text("教科414730852", width / 2, (height - imgH) / 4);
+
+  if (!videoReady) {
+    text("等待相機授權...", width/2, height/2);
+    return;
+  }
 
   push();
   translate(width / 2, height / 2);
@@ -42,6 +53,8 @@ function draw() {
 
   drawFaceMesh(imgW, imgH);
   pop();
+
+  text("教科414730852", width / 2, (height - imgH) / 4);
 }
 
 function drawFaceMesh(imgW, imgH) {
@@ -59,8 +72,8 @@ function drawFaceMesh(imgW, imgH) {
     let idx = connectIndex[i];
 
     if (keypoints[idx]) {
-      let x = map(keypoints[idx][0], 0, capture.width, -imgW / 2, imgW / 2);
-      let y = map(keypoints[idx][1], 0, capture.height, -imgH / 2, imgH / 2);
+      let x = map(keypoints[idx][0], 0, capture.width, -imgW/2, imgW/2);
+      let y = map(keypoints[idx][1], 0, capture.height, -imgH/2, imgH/2);
       vertex(x, y);
     }
   }
