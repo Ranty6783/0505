@@ -58,7 +58,7 @@ function draw() {
   fill(0);
   textSize(32);
   textAlign(CENTER, CENTER);
-  text("教科4414730852", width / 2, (height - imgH) / 4);
+  text("教科414730852", width / 2, (height - imgH) / 4);
 
   if (!videoReady) return;
 
